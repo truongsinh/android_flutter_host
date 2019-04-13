@@ -1,0 +1,3 @@
+[submodule "flutter_embedding"]
+	path = flutter_embedding
+	url = git@github.com:truongsinh/flutter_embedding.git
