@@ -47,3 +47,15 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }
+
+
+// known bug https://github.com/flutter/flutter/issues/30916
+android.buildTypes.all{ theBuildType ->
+    android.productFlavors.all { theProductFlavor ->
+        tasks.whenTaskAdded { theTask ->
+            if (theTask.name == "merge${theProductFlavor.name.capitalize()}${theBuildType.name.capitalize()}Assets") {
+                theTask.dependsOn ":flutter:copyFlutterAssets${theBuildType.name.capitalize()}"
+            }
+        }
+    }
+}
