@@ -1,6 +1,8 @@
 package pro.truongsinh.flutter.android_flutter_host
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -27,8 +29,14 @@ class MainActivity : AppCompatActivity() {
                 .initialRoute("anotherRoute")
                 .build(this)
                 .putExtra("route_args", hashMapOf("arg1Key" to "arg1Value", "arg2Key" to 2))
-            startActivity(flutterEmbeddingActivityIntent)
+            startActivityForResult(flutterEmbeddingActivityIntent, 42)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        val data = intent?.extras?.keySet()?.associateBy({it}, {intent.extras.get(it)})
+        Log.d("Flutter example", "requestCode: $requestCode, resultCode: $resultCode, data $data")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

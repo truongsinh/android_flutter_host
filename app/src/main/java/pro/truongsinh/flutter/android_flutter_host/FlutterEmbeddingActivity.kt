@@ -6,8 +6,10 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragment
 import android.os.Bundle
+import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
 
 class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngineProvider {
 
@@ -21,6 +23,41 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngin
         init(this)
         val intentExtras = intent.extras.keySet().associateBy({it}, {intent.extras.get(it)})
         eventChannelSink?.success(intentExtras)
+
+        MethodChannel(cachedFlutterEngine.dartExecutor, METHOD_CHANNEL_NAME).setMethodCallHandler { call, result ->
+            when {
+                call.method == "navigatorPop" -> {
+                    val returnIntent = Intent()
+                    val args = call.arguments
+                    if (args is Map<*, *>) {
+                        args.keys.forEach {
+                            if(it is String) {
+                                when (val value = args[it]) {
+                                    // see https://flutter.dev/docs/development/platform-integration/platform-channels#platform-channel-data-types-support-and-codecs
+                                    null -> {}
+                                    is Boolean -> returnIntent.putExtra(it, value)
+                                    is Integer -> returnIntent.putExtra(it, value)
+                                    is Long -> returnIntent.putExtra(it, value)
+                                    is Double -> returnIntent.putExtra(it, value)
+                                    is String -> returnIntent.putExtra(it, value)
+                                    is ByteArray -> returnIntent.putExtra(it, value)
+                                    is IntArray -> returnIntent.putExtra(it, value)
+                                    is LongArray -> returnIntent.putExtra(it, value)
+                                    is DoubleArray -> returnIntent.putExtra(it, value)
+                                    is ArrayList<*> -> returnIntent.putExtra(it, value)
+                                    is HashMap<*, *> -> returnIntent.putExtra(it, value)
+                                    else -> {}
+                                }
+
+                            }
+                        }
+                    }
+                    setResult(24, returnIntent)
+                    finish()
+                }
+                else -> result.notImplemented()
+            }
+        }
     }
 
     // This is the method where you provide your existing cachedFlutterEngine instance.
@@ -31,6 +68,7 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngin
     companion object {
         private lateinit var cachedFlutterEngine: FlutterEngine
         private const val EVENT_CHANNEL_NAME = "pro.truongsinh.flutter.android_flutter_host/event"
+        private const val METHOD_CHANNEL_NAME = "pro.truongsinh.flutter.android_flutter_host/method"
         private var eventChannelSink: EventChannel.EventSink? = null
 
         fun init(context: Context) {
