@@ -1,5 +1,6 @@
 package pro.truongsinh.flutter.android_flutter_host
 
+import android.app.Activity
 import android.content.Context
 import io.flutter.view.FlutterMain
 import io.flutter.embedding.engine.FlutterEngine
@@ -8,8 +9,13 @@ import io.flutter.embedding.android.FlutterFragment
 import android.os.Bundle
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry
+import io.flutter.plugin.platform.PlatformViewRegistry
+import io.flutter.plugins.GeneratedPluginRegistrant
+import io.flutter.view.TextureRegistry
 
 class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngineProvider {
 
@@ -18,11 +24,91 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngin
     private class IntentBuilder// Override the constructor to specify your class.
     internal constructor() : FlutterActivity.IntentBuilder(FlutterEmbeddingActivity::class.java)
 
+    private fun createPluginRegistry(messenger: BinaryMessenger, activity: Activity): PluginRegistry {
+        return object : PluginRegistry {
+            override fun registrarFor(s: String): PluginRegistry.Registrar {
+                return object : PluginRegistry.Registrar {
+                    override fun activity(): Activity {
+                        return activity
+                    }
+
+                    override fun context(): Context {
+                        return activity
+                    }
+
+                    override fun activeContext(): Context {
+                        return activity
+                    }
+
+                    override fun messenger(): BinaryMessenger {
+                        return messenger
+                    }
+
+                    override fun textures(): TextureRegistry? {
+                        return null
+                    }
+
+                    override fun platformViewRegistry(): PlatformViewRegistry? {
+                        return null
+                    }
+
+                    override fun view(): io.flutter.view.FlutterView? {
+                        return null
+                    }
+
+                    override fun lookupKeyForAsset(s: String): String? {
+                        return null
+                    }
+
+                    override fun lookupKeyForAsset(s: String, s1: String): String? {
+                        return null
+                    }
+
+                    override fun publish(o: Any): PluginRegistry.Registrar {
+                        return this
+                    }
+
+                    override fun addRequestPermissionsResultListener(requestPermissionsResultListener: PluginRegistry.RequestPermissionsResultListener): PluginRegistry.Registrar {
+                        return this
+                    }
+
+                    override fun addActivityResultListener(activityResultListener: PluginRegistry.ActivityResultListener): PluginRegistry.Registrar {
+                        return this
+                    }
+
+                    override fun addNewIntentListener(newIntentListener: PluginRegistry.NewIntentListener): PluginRegistry.Registrar {
+                        return this
+                    }
+
+                    override fun addUserLeaveHintListener(userLeaveHintListener: PluginRegistry.UserLeaveHintListener): PluginRegistry.Registrar {
+                        return this
+                    }
+
+                    override fun addViewDestroyListener(viewDestroyListener: PluginRegistry.ViewDestroyListener): PluginRegistry.Registrar {
+                        return this
+                    }
+                }
+            }
+
+            override fun hasPlugin(s: String): Boolean {
+                return false
+            }
+
+            override fun <T> valuePublishedByPlugin(s: String): T? {
+                return null
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         init(this)
+        // convert intent extras into a Map, which is then passed to Flutter's Dart side
         val intentExtras = intent.extras.keySet().associateBy({it}, {intent.extras.get(it)})
         eventChannelSink?.success(intentExtras)
+
+        GeneratedPluginRegistrant.registerWith(createPluginRegistry(cachedFlutterEngine.dartExecutor, this))
 
         MethodChannel(cachedFlutterEngine.dartExecutor, METHOD_CHANNEL_NAME).setMethodCallHandler { call, result ->
             when {
