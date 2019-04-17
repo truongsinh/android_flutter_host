@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +18,15 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
-                .initialRoute("")
+                .initialRoute("counter")
                 .build(this)
+            startActivity(flutterEmbeddingActivityIntent)
+        }
+        anotherFlutterRouteButton.setOnClickListener {
+            val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
+                .initialRoute("anotherRoute")
+                .build(this)
+                .putExtra("route_args", hashMapOf("arg1Key" to "arg1Value", "arg2Key" to 2))
             startActivity(flutterEmbeddingActivityIntent)
         }
     }
