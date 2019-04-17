@@ -1,8 +1,7 @@
 package pro.truongsinh.flutter.android_flutter_host
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 
@@ -12,12 +11,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FlutterEmbeddingActivity.init(this)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        fab.setOnClickListener {
+            val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
+                .initialRoute("")
+                .build(this)
+            startActivity(flutterEmbeddingActivityIntent)
         }
     }
 
