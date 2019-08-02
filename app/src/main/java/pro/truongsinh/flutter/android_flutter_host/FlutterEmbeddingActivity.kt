@@ -5,7 +5,7 @@ import android.content.Context
 import io.flutter.view.FlutterMain
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.FlutterFragment
+import io.flutter.embedding.android.FlutterEngineProvider
 import android.os.Bundle
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
@@ -17,7 +17,7 @@ import io.flutter.plugin.platform.PlatformViewRegistry
 import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.view.TextureRegistry
 
-class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngineProvider {
+class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
 
     // You need to define an IntentBuilder subclass so that the
     // IntentBuilder uses FlutterEmbeddingActivity instead of a regular FlutterActivity.
@@ -147,7 +147,7 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterFragment.FlutterEngin
     }
 
     // This is the method where you provide your existing cachedFlutterEngine instance.
-    override fun getFlutterEngine(context: Context): FlutterEngine {
+    override fun provideFlutterEngine(context: Context): FlutterEngine {
         return cachedFlutterEngine
     }
 

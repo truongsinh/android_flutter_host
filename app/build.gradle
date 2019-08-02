@@ -46,16 +46,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-}
 
 
-// known bug https://github.com/flutter/flutter/issues/30916
-android.buildTypes.all{ theBuildType ->
-    android.productFlavors.all { theProductFlavor ->
-        tasks.whenTaskAdded { theTask ->
-            if (theTask.name == "merge${theProductFlavor.name.capitalize()}${theBuildType.name.capitalize()}Assets") {
-                theTask.dependsOn ":flutter:copyFlutterAssets${theBuildType.name.capitalize()}"
-            }
-        }
-    }
+    // known issue https://github.com/flutter/flutter/pull/31028#issuecomment-516902006
+    def lifecycle_version = "2.0.0"
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    // alternatively - just ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // alternatively - just LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+    // optional - ReactiveStreams support for LiveData
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+    // optional - Test helpers for LiveData
+    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+
 }
