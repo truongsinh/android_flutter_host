@@ -49,17 +49,7 @@ dependencies {
 
 
     // known issue https://github.com/flutter/flutter/pull/31028#issuecomment-516902006
-    def lifecycle_version = "2.0.0"
-    // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    // alternatively - just ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    // alternatively - just LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
-    // optional - ReactiveStreams support for LiveData
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
-    // optional - Test helpers for LiveData
-    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+    def lifecycle_version = "1.1.1"
+    implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
 
 }

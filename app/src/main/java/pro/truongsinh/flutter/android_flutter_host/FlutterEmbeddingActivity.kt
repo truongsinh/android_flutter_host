@@ -151,6 +151,10 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
         return cachedFlutterEngine
     }
 
+    override fun retainFlutterEngineAfterHostDestruction(): Boolean {
+        return true
+    }
+
     companion object {
         private lateinit var cachedFlutterEngine: FlutterEngine
         private const val EVENT_CHANNEL_NAME = "pro.truongsinh.flutter.android_flutter_host/event"
