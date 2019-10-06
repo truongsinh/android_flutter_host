@@ -19,11 +19,6 @@ import io.flutter.view.TextureRegistry
 
 class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
 
-    // You need to define an IntentBuilder subclass so that the
-    // IntentBuilder uses FlutterEmbeddingActivity instead of a regular FlutterActivity.
-    private class IntentBuilder// Override the constructor to specify your class.
-    internal constructor() : FlutterActivity.IntentBuilder(FlutterEmbeddingActivity::class.java)
-
     private fun createPluginRegistry(messenger: BinaryMessenger, activity: Activity): PluginRegistry {
         return object : PluginRegistry {
             override fun registrarFor(s: String): PluginRegistry.Registrar {
@@ -102,8 +97,8 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        super.onCreate(savedInstanceState)
         init(this)
+        super.onCreate(savedInstanceState)
         // convert intent extras into a Map, which is then passed to Flutter's Dart side
         val intentExtras = intent.extras.keySet().associateBy({it}, {intent.extras.get(it)})
         eventChannelSink?.success(intentExtras)
@@ -151,10 +146,6 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
         return cachedFlutterEngine
     }
 
-    override fun retainFlutterEngineAfterHostDestruction(): Boolean {
-        return true
-    }
-
     companion object {
         private lateinit var cachedFlutterEngine: FlutterEngine
         private const val EVENT_CHANNEL_NAME = "pro.truongsinh.flutter.android_flutter_host/event"
@@ -179,17 +170,10 @@ class FlutterEmbeddingActivity : FlutterActivity(), FlutterEngineProvider {
                 }
             })
             if (context !is FlutterEmbeddingActivity) {
-                val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
-                    .initialRoute("init")
-                    .build(context)
+                val flutterEmbeddingActivityIntent = Intent(context, FlutterEmbeddingActivity::class.java)
+                    .putExtra("initial_route", "init")
                 startActivity(context, flutterEmbeddingActivityIntent, null)
             }
-        }
-
-        // This is the method that others will use to create
-        // an Intent that launches MyFlutterActivity.
-        fun createBuilder(): FlutterActivity.IntentBuilder {
-            return IntentBuilder()
         }
     }
 }

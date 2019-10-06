@@ -1,33 +1,31 @@
 package pro.truongsinh.flutter.android_flutter_host
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FlutterEmbeddingActivity.init(this)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+//        setSupportActionBar(toolbar)
 
         fab.setOnClickListener {
-            val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
-                .initialRoute("counter")
-                .build(this)
+            val flutterEmbeddingActivityIntent = Intent(this, FlutterEmbeddingActivity::class.java)
+                .putExtra("initial_route", "counter")
             startActivity(flutterEmbeddingActivityIntent)
         }
         anotherFlutterRouteButton.setOnClickListener {
-            val flutterEmbeddingActivityIntent = FlutterEmbeddingActivity.createBuilder()
-                .initialRoute("anotherRoute")
-                .build(this)
+            val flutterEmbeddingActivityIntent = Intent(this, FlutterEmbeddingActivity::class.java)
+                .putExtra("initial_route", "anotherRoute")
                 .putExtra("route_args", hashMapOf("arg1Key" to "arg1Value", "arg2Key" to 2))
             startActivityForResult(flutterEmbeddingActivityIntent, 42)
         }
